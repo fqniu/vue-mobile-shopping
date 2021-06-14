@@ -9,8 +9,7 @@ import pageNone from '@/views/pageNone'
 
 Vue.use(Router)
 export default new Router({
-  // mode: 'history',
-
+  mode: 'history',
   routes: [{
       path: '/login',
       name: 'login',
