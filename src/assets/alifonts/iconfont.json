@@ -1,0 +1,275 @@
+{
+  "id": "1620328",
+  "name": "和WeGo商家端APP",
+  "font_family": "font_family",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "6576586",
+      "name": "新东方-刷新图标",
+      "font_class": "refresh",
+      "unicode": "e67b",
+      "unicode_decimal": 59003
+    },
+    {
+      "icon_id": "6882059",
+      "name": "叉",
+      "font_class": "cha",
+      "unicode": "e6d6",
+      "unicode_decimal": 59094
+    },
+    {
+      "icon_id": "10784213",
+      "name": "报警",
+      "font_class": "baojing",
+      "unicode": "e6b5",
+      "unicode_decimal": 59061
+    },
+    {
+      "icon_id": "10784218",
+      "name": "编组 4",
+      "font_class": "bianzu",
+      "unicode": "e6b9",
+      "unicode_decimal": 59065
+    },
+    {
+      "icon_id": "10790272",
+      "name": "设置",
+      "font_class": "shezhi",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "10790309",
+      "name": "开门",
+      "font_class": "shezhibeifen",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "10790324",
+      "name": "概况",
+      "font_class": "bianzu2",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "12938413",
+      "name": "提现 2",
+      "font_class": "tixian",
+      "unicode": "e6f6",
+      "unicode_decimal": 59126
+    },
+    {
+      "icon_id": "12938414",
+      "name": "路径 7备份 2",
+      "font_class": "lujingbeifen",
+      "unicode": "e6f7",
+      "unicode_decimal": 59127
+    },
+    {
+      "icon_id": "10874943",
+      "name": "返 回",
+      "font_class": "back",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "11313077",
+      "name": "返 回",
+      "font_class": "fanhui1",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "12930858",
+      "name": "未选中 2",
+      "font_class": "weixuanzhong",
+      "unicode": "e6de",
+      "unicode_decimal": 59102
+    },
+    {
+      "icon_id": "12930859",
+      "name": "删除",
+      "font_class": "shanchu",
+      "unicode": "e6df",
+      "unicode_decimal": 59103
+    },
+    {
+      "icon_id": "12930860",
+      "name": "选中 2",
+      "font_class": "xuanzhong",
+      "unicode": "e6e0",
+      "unicode_decimal": 59104
+    },
+    {
+      "icon_id": "12930867",
+      "name": "查看密码 2",
+      "font_class": "chakanmima",
+      "unicode": "e6e1",
+      "unicode_decimal": 59105
+    },
+    {
+      "icon_id": "12930868",
+      "name": "弹框叉",
+      "font_class": "dankuangcha",
+      "unicode": "e6e2",
+      "unicode_decimal": 59106
+    },
+    {
+      "icon_id": "12930869",
+      "name": "48xp搜索",
+      "font_class": "xpsousuo",
+      "unicode": "e6e3",
+      "unicode_decimal": 59107
+    },
+    {
+      "icon_id": "12930870",
+      "name": "错误清空",
+      "font_class": "cuowuqingkong",
+      "unicode": "e6e4",
+      "unicode_decimal": 59108
+    },
+    {
+      "icon_id": "12930871",
+      "name": "弹框返回",
+      "font_class": "dankuangfanhui",
+      "unicode": "e6e5",
+      "unicode_decimal": 59109
+    },
+    {
+      "icon_id": "12930872",
+      "name": "地址",
+      "font_class": "dizhi",
+      "unicode": "e6e6",
+      "unicode_decimal": 59110
+    },
+    {
+      "icon_id": "12930873",
+      "name": "基本信息",
+      "font_class": "jibenxinxi",
+      "unicode": "e6e7",
+      "unicode_decimal": 59111
+    },
+    {
+      "icon_id": "12930874",
+      "name": "店铺配置 2",
+      "font_class": "dianpupeizhi",
+      "unicode": "e6e8",
+      "unicode_decimal": 59112
+    },
+    {
+      "icon_id": "12930875",
+      "name": "返回",
+      "font_class": "fanhui",
+      "unicode": "e6e9",
+      "unicode_decimal": 59113
+    },
+    {
+      "icon_id": "12930876",
+      "name": "渐进绿",
+      "font_class": "jianjinlv",
+      "unicode": "e6ea",
+      "unicode_decimal": 59114
+    },
+    {
+      "icon_id": "12930877",
+      "name": "渐进黑",
+      "font_class": "jianjinhei",
+      "unicode": "e6eb",
+      "unicode_decimal": 59115
+    },
+    {
+      "icon_id": "12930878",
+      "name": "检查更新 2",
+      "font_class": "jianchagengxin",
+      "unicode": "e6ec",
+      "unicode_decimal": 59116
+    },
+    {
+      "icon_id": "12930879",
+      "name": "添加图片",
+      "font_class": "tianjiatupian",
+      "unicode": "e6ed",
+      "unicode_decimal": 59117
+    },
+    {
+      "icon_id": "12930880",
+      "name": "清空",
+      "font_class": "qingkong",
+      "unicode": "e6ee",
+      "unicode_decimal": 59118
+    },
+    {
+      "icon_id": "12930881",
+      "name": "清除缓存 2",
+      "font_class": "qingchuhuancun",
+      "unicode": "e6ef",
+      "unicode_decimal": 59119
+    },
+    {
+      "icon_id": "12930882",
+      "name": "选中",
+      "font_class": "xuanzhong1",
+      "unicode": "e6f0",
+      "unicode_decimal": 59120
+    },
+    {
+      "icon_id": "12930883",
+      "name": "选择",
+      "font_class": "xuanze",
+      "unicode": "e6f1",
+      "unicode_decimal": 59121
+    },
+    {
+      "icon_id": "12930884",
+      "name": "资质信息",
+      "font_class": "zizhixinxi",
+      "unicode": "e6f2",
+      "unicode_decimal": 59122
+    },
+    {
+      "icon_id": "12930885",
+      "name": "银行卡信息 2",
+      "font_class": "yinhangkaxinxi",
+      "unicode": "e6f3",
+      "unicode_decimal": 59123
+    },
+    {
+      "icon_id": "12930886",
+      "name": "隐藏密码",
+      "font_class": "yincangmima",
+      "unicode": "e6f4",
+      "unicode_decimal": 59124
+    },
+    {
+      "icon_id": "12930887",
+      "name": "位置 2",
+      "font_class": "weizhi",
+      "unicode": "e6f5",
+      "unicode_decimal": 59125
+    },
+    {
+      "icon_id": "12897105",
+      "name": "通知 2",
+      "font_class": "tongzhi",
+      "unicode": "e6dd",
+      "unicode_decimal": 59101
+    },
+    {
+      "icon_id": "12897099",
+      "name": "查看 2",
+      "font_class": "chakan",
+      "unicode": "e6db",
+      "unicode_decimal": 59099
+    },
+    {
+      "icon_id": "12897100",
+      "name": "消息",
+      "font_class": "xiaoxi",
+      "unicode": "e6dc",
+      "unicode_decimal": 59100
+    }
+  ]
+}
