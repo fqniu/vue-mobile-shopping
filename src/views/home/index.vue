@@ -1,38 +1,52 @@
 <template>
-  <div  class="home">
-    <div class="main-page-wrapper">
+  <div class="home">
+    <!-- <div class="main-page-wrapper"> -->
     <!-- 轮播图 -->
-    <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
-      <van-swipe-item v-for="(item,idx) in swipeList" :key="idx">
-        <img :src="item.target" alt="" class="swiper-img">
-      </van-swipe-item>
-    </van-swipe>
-    
-    <!-- 数据列表 -->
-    <div class="content">
-      <LoadMore :onLoadMore="onLoadMore" :enableLoadMore="enableLoadMore">
+    <!-- <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
+        <van-swipe-item v-for="(item, idx) in swipeList" :key="idx">
+          <img :src="item.target" alt="" class="swiper-img" />
+        </van-swipe-item>
+      </van-swipe> -->
+    <div class="wrapper-content">
+      <scroll
+        class="content"
+        ref="scroll"
+        @pullingUp="loadMore"
+        :data="data"
+        :pull-up-load="true"
+        :probe-type="3"
+      >
+        <!-- 轮播图 -->
+        <!-- <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
+          <van-swipe-item v-for="(item, idx) in swipeList" :key="idx">
+            <img :src="item.target" alt="" class="swiper-img" />
+          </van-swipe-item>
+        </van-swipe> -->
         <div
-          class="advert-item click w702 bg-fff ml-24"
+          class="advert-item click w702 bg-fff"
           v-for="(item, idx) in data"
           :key="idx"
-          @click="gotoAdvDetail(item.resource_id)" 
+          @click="gotoAdvDetail(item.resource_id)"
         >
           <div class="adv-left">
             <div class="fs-30 color-000 flex-center">
               <span
                 class="label fs-24"
                 :class="{
-                  label: item.atlas.category == 'A级',
-                  label2: item.atlas.category == 'B级',
-                  label3: item.atlas.category == 'C级',
-                  label4: item.atlas.category == 'D级',
+                  label: item.rank == '一级屏',
+                  label2: item.rank == '二级屏',
+                  label3: item.rank == '三级屏',
+                  label4: item.rank == '四级屏'
                 }"
-                >{{ item.atlas.category }}
+              >
+                {{ item.atlas.category }}
               </span>
-              <span class="adv-title font-bold text-el">{{ item.resource_info }}</span>
+              <span class="adv-title font-bold text-el">
+                {{ item.resource_info }}
+              </span>
             </div>
             <div class="flex-center mt-15">
-              <div class="tag fs-24 text-el">{{ item.businessName }}</div>
+              <div class="tag fs-24 text-el">{{ item.resource_info }}</div>
               <div class="line"></div>
             </div>
             <div class="fs-24 color-333 mt-10 text-el" style="width: 4.9rem">
@@ -40,149 +54,147 @@
             </div>
             <div class="mt-24">
               <span class="coin fs-28">收藏量{{ item.atlas.like_count }}</span>
-              <span class="qty fs-20 ml-24">曝光量{{ item.atlas.favorite_count }}</span>
+              <span class="qty fs-20 ml-24">
+                曝光量{{ item.atlas.favorite_count }}
+              </span>
             </div>
           </div>
           <div class="adv-right">
             <div class="adv-img">
               <img :src="item.target" alt="" />
             </div>
-            <div class="dist fs-20">
-              {{ item.atlas.sender.username}}
+            <div class="dist fs-20" v-if="item.distance">
+              {{ item.atlas.sender.username }}
             </div>
           </div>
         </div>
-      </LoadMore>
-    </div>
+      </scroll>
     </div>
   </div>
+  <!-- </div> -->
 </template>
 
 <script>
-import LoadMore from "../components/loadMore";
-import { homeSwipeList, homeGoodsList } from '@/api/home';
+import scroll from '../components/scroll'
+import { homeSwipeList, homeGoodsList } from '@/api/home'
 
 export default {
-  name: "index",
-  components: {
-    LoadMore,
-  },
+  components: { scroll },
   data() {
     return {
-      data: [],
-      swipeList: [],
       page: 1,
-      limit: 5,
-      enableLoadMore: true,
-    };
+      limit: 10,
+      data: [],
+      swipeList: []
+    }
   },
   methods: {
-    onLoadMore(done) {
-      setTimeout(() => {
-        if (!this.enableLoadMore) {
-          return;
-        }
-        this.page = this.page + 1;
-        this.getListData();
-        done();
-      }, 200);
-    },
     getListData() {
       let params = {
         // 页数
         page: this.page,
-        limit: this.limit,
-      };
-      homeGoodsList(params).then((res) => {
-        // console.log(res);
-        if(res.code == 200){
+        limit: this.limit
+      }
+      homeGoodsList(params).then(res => {
+        if (res.code == 200) {
           if (this.data.length > res.item.total) {
-            this.enableLoadMore = false;
+            this.enableLoadMore = false
+            return
           }
-          this.data = this.data.concat(res.item.resultList);
+          // this.data = this.data.concat(res.item.resultList);
+          const homeGoodsList = res.item.resultList
+          this.data.push(...homeGoodsList)
+          this.page += 1
+          this.$refs.scroll.finishPullUp()
         } else {
-          console.log('接口错误');
+          console.log('接口出错')
         }
-      });
+      })
     },
     // 筛选后发送请求数据方法
-    async goodsList() {
+    async homeGoodsList() {
       // 筛选条件
       let params = {
         // 页数
         page: this.page,
         limit: this.limit
-      };
+      }
       // console.log(params);
-      let res = await homeGoodsList(params);
-      // console.log(res);
-      this.data = res.item.resultList;
+      let res = await homeGoodsList(params)
+      this.data = res.item.resultList
+    },
+    // contentScroll(position) {
+    //     // 1.决定tabFixed是否显示
+    //     this.isTabFixed = position.y < -this.tabOffsetTop;
+    //     // 2.决定backTop是否显示
+    //     this.showBackTop = position.y < -BACKTOP_DISTANCE;
+    // },
+    loadMore() {
+      // this.getHomeProducts(this.currentType);
+      this.getListData()
+    },
+    backTop() {
+      this.$refs.scroll.scrollTo(0, 0, 300)
     },
     // 轮播图数据
-    async gethomeSwipeList(){
-      let res = await homeSwipeList();
-      // console.log(res);
-      this.swipeList = res.item;
+    async gethomeSwipeList() {
+      let res = await homeSwipeList()
+      this.swipeList = res.item
     },
-    gotoAdvDetail(id){
-      console.log(id);
-      this.$router.push({path:'/detail', query: { id: id }})
+    gotoAdvDetail(id) {
+      console.log(id)
+      this.$router.push({ path: '/detail', query: { id: id } })
     }
   },
   created() {
-    this.gethomeSwipeList();
-    this.goodsList();
-  },
-  mounted() {
-    window.addEventListener("scroll",() => {
-      let top =
-        window.pageYOffset ||
-        document.documentElement.scrollTop ||
-        document.body.scrollTop;
-      // console.log(11122, top);
-      // if (top > 700) {
-      //     this.scrollTag = true;
-      // } else {
-      //     this.scrollTag = false
-      // }
-    },true);
-    // })
-  },
-};
+    this.gethomeSwipeList()
+    this.homeGoodsList()
+  }
+}
 </script>
 
-<style lang="scss" scope>
-.home{
-  width: 100%;
-  height: 100%;
-}
+<style scoped lang="scss">
+// .home {
+//   height: 100vh;
+// }
 .main-page-wrapper {
   position: relative;
   overflow: auto;
 }
-.content {
+.wrapper-content {
   height: 100%;
   margin-bottom: 1.2rem;
 }
+
+// .content {
+//   position: relative;
+//   top: 0.24rem;
+//   bottom: 1.08rem;
+//   left: 0;
+//   right: 0;
+//   overflow: hidden;
+// }
+
 // 轮播图
-.my-swipe{
+.my-swipe {
   width: 100%;
   height: 4.5rem;
 }
-.swiper-img{
+.swiper-img {
   width: 100%;
   height: 4.5rem;
 }
 // 这部分是列表
 .advert-item {
+  margin-left: 0.24rem;
   height: 2.43rem;
   padding: 0.26rem 0.24rem 0;
   display: flex;
   justify-content: space-between;
   border-radius: 0.18rem;
-  margin-top: 0.18rem;
+  margin-bottom: 0.18rem;
   .label {
-    width:1.1rem;
+    width: 1.2rem;
     height: 0.34rem;
     line-height: 0.34rem;
     text-align: center;
@@ -222,7 +234,7 @@ export default {
     margin: 0 0.23rem;
     position: relative;
     &::after {
-      content: "";
+      content: '';
       display: block;
       position: absolute;
       top: 0;
@@ -242,7 +254,7 @@ export default {
     margin: 0 0.23rem;
     position: relative;
     &::after {
-      content: "";
+      content: '';
       display: inline-block;
       position: absolute;
       top: 0;
@@ -276,9 +288,6 @@ export default {
     color: #8c8c8c;
     margin-top: 0.03rem;
     text-align: right;
-    width: 1.6rem;
-    height: .24rem;
-    overflow: hidden;
   }
 }
 </style>

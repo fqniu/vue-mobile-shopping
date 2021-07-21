@@ -1,44 +1,38 @@
 <template>
-  <div class="classify">
+  <div  class="home">
+    <div class="main-page-wrapper">
     <!-- 轮播图 -->
     <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
       <van-swipe-item v-for="(item,idx) in swipeList" :key="idx">
         <img :src="item.target" alt="" class="swiper-img">
       </van-swipe-item>
     </van-swipe>
-
-    <scroll
-      class="content"
-      ref="scroll"
-      @pullingUp="loadMore"
-      :data="data"
-      :pull-up-load="true"
-      :probe-type="3"
-    >
-      <div>
-        <!-- <div class="tab-list"></div> -->
+    
+    <!-- 数据列表 -->
+    <div class="content">
+      <LoadMore :onLoadMore="onLoadMore" :enableLoadMore="enableLoadMore">
         <div
-          class="advert-item click w702 bg-fff"
+          class="advert-item click w702 bg-fff ml-24"
           v-for="(item, idx) in data"
           :key="idx"
-          @click="gotoAdvDetail(item.resource_id)"
+          @click="gotoAdvDetail(item.resource_id)" 
         >
           <div class="adv-left">
             <div class="fs-30 color-000 flex-center">
               <span
                 class="label fs-24"
                 :class="{
-                  label: item.rank == '一级屏',
-                  label2: item.rank == '二级屏',
-                  label3: item.rank == '三级屏',
-                  label4: item.rank == '四级屏',
+                  label: item.atlas.category == 'A级',
+                  label2: item.atlas.category == 'B级',
+                  label3: item.atlas.category == 'C级',
+                  label4: item.atlas.category == 'D级',
                 }"
                 >{{ item.atlas.category }}
               </span>
               <span class="adv-title font-bold text-el">{{ item.resource_info }}</span>
             </div>
             <div class="flex-center mt-15">
-              <div class="tag fs-24 text-el">{{ item.resource_info }}</div>
+              <div class="tag fs-24 text-el">{{ item.businessName }}</div>
               <div class="line"></div>
             </div>
             <div class="fs-24 color-333 mt-10 text-el" style="width: 4.9rem">
@@ -52,51 +46,62 @@
           <div class="adv-right">
             <div class="adv-img">
               <img :src="item.target" alt="" />
-            </div>  
-            <div class="dist fs-20" v-if="item.distance">
+            </div>
+            <div class="dist fs-20">
               {{ item.atlas.sender.username}}
             </div>
           </div>
         </div>
-      </div>
-    </scroll>
+      </LoadMore>
+    </div>
+    </div>
   </div>
 </template>
 
 <script>
-import scroll from "../components/scroll";
-import { homeSwipeList, goodsList } from '@/api/classify';
+import LoadMore from "../components/loadMore";
+import { homeSwipeList, homeGoodsList } from '@/api/home';
 
 export default {
-  components: { scroll },
+  name: "index",
+  components: {
+    LoadMore,
+  },
   data() {
     return {
-      page: 1,
-      limit: 5,
       data: [],
       swipeList: [],
+      page: 1,
+      limit: 5,
+      enableLoadMore: true,
     };
   },
   methods: {
+    onLoadMore(done) {
+      setTimeout(() => {
+        if (!this.enableLoadMore) {
+          return;
+        }
+        this.page = this.page + 1;
+        this.getListData();
+        done();
+      }, 200);
+    },
     getListData() {
       let params = {
         // 页数
         page: this.page,
         limit: this.limit,
       };
-      goodsList(params).then((res) => {
+      homeGoodsList(params).then((res) => {
+        // console.log(res);
         if(res.code == 200){
-          if(this.data.length > res.item.total) {
-            this.enableLoadMore = false
-            return 
+          if (this.data.length > res.item.total) {
+            this.enableLoadMore = false;
           }
-          // this.data = this.data.concat(res.item.resultList);
-          const goodsList = res.item.resultList;
-          this.data.push(...goodsList);
-          this.page += 1;
-          this.$refs.scroll.finishPullUp();
+          this.data = this.data.concat(res.item.resultList);
         } else {
-          console.log('接口出错');
+          console.log('接口错误');
         }
       });
     },
@@ -106,28 +111,17 @@ export default {
       let params = {
         // 页数
         page: this.page,
-        limit: this.limit,
+        limit: this.limit
       };
       // console.log(params);
-      let res = await goodsList(params);
+      let res = await homeGoodsList(params);
+      // console.log(res);
       this.data = res.item.resultList;
-    },
-    // contentScroll(position) {
-    //     // 1.决定tabFixed是否显示
-    //     this.isTabFixed = position.y < -this.tabOffsetTop;
-    //     // 2.决定backTop是否显示
-    //     this.showBackTop = position.y < -BACKTOP_DISTANCE;
-    // },
-    loadMore() {
-      // this.getHomeProducts(this.currentType);
-      this.getListData();
-    },
-    backTop() {
-      this.$refs.scroll.scrollTo(0, 0, 300);
     },
     // 轮播图数据
     async gethomeSwipeList(){
       let res = await homeSwipeList();
+      // console.log(res);
       this.swipeList = res.item;
     },
     gotoAdvDetail(id){
@@ -139,10 +133,37 @@ export default {
     this.gethomeSwipeList();
     this.goodsList();
   },
+  mounted() {
+    window.addEventListener("scroll",() => {
+      let top =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop;
+      // console.log(11122, top);
+      // if (top > 700) {
+      //     this.scrollTag = true;
+      // } else {
+      //     this.scrollTag = false
+      // }
+    },true);
+    // })
+  },
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scope>
+.home{
+  width: 100%;
+  height: 100%;
+}
+.main-page-wrapper {
+  position: relative;
+  overflow: auto;
+}
+.content {
+  height: 100%;
+  margin-bottom: 1.2rem;
+}
 // 轮播图
 .my-swipe{
   width: 100%;
@@ -152,38 +173,16 @@ export default {
   width: 100%;
   height: 4.5rem;
 }
-.classify {
-  height: 100vh;
-}
-// .cont-top {
-//   background: #ccc;
-//   height: 4rem;
-// }
-.tab-list {
-  background: #e1e1e1;
-  height: 0.88rem;
-}
-.content {
-  position: absolute;
-  top: 4.6rem;
-  bottom: 1.08rem;
-  left: 0;
-  right: 0;
-  overflow: hidden;
-  padding-bottom: 1.08rem;
-  padding-top: 4.6rem;
-}
 // 这部分是列表
 .advert-item {
-  margin-left: 0.24rem;
   height: 2.43rem;
   padding: 0.26rem 0.24rem 0;
   display: flex;
   justify-content: space-between;
   border-radius: 0.18rem;
-  margin-bottom: 0.18rem;
+  margin-top: 0.18rem;
   .label {
-    width: 1.2rem;
+    width:1.1rem;
     height: 0.34rem;
     line-height: 0.34rem;
     text-align: center;
@@ -277,6 +276,9 @@ export default {
     color: #8c8c8c;
     margin-top: 0.03rem;
     text-align: right;
+    width: 1.6rem;
+    height: .24rem;
+    overflow: hidden;
   }
 }
 </style>

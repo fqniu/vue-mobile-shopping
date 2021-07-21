@@ -165,9 +165,11 @@ export default {
   height: 1.08rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding: 0 0.48rem;
   background: #fff;
   .tab-item {
-    width: 20%;
+    // width: 20%;
     text-align: center;
   }
   .tab-item-img {
