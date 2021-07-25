@@ -1,13 +1,19 @@
 import Cookies from 'js-cookie'
 // cookie保存的天数
 import config from '@/config'
-import {forEach, hasOneOf, objEqual} from '@/utils/tools'
+import {
+  forEach,
+  hasOneOf,
+  objEqual
+} from '@/utils/tools'
 
 export const TOKEN_KEY = 'token'
 
 export const setToken = (token, auto) => {
   if (auto) {
-    Cookies.set(TOKEN_KEY, token, {expires: config.cookieExpires || 1})
+    Cookies.set(TOKEN_KEY, token, {
+      expires: config.cookieExpires || 1
+    })
   } else {
     Cookies.set(TOKEN_KEY, token)
   }
@@ -15,19 +21,21 @@ export const setToken = (token, auto) => {
 
 export const getToken = () => {
   const token = Cookies.get(TOKEN_KEY)
-  if (token  &&  token !== 'undefined') {
+  if (token && token !== 'undefined') {
     return token
   } else {
     return false
   }
 }
-export const removeToken = ()=>{
-    Cookies.remove(TOKEN_KEY);
+export const removeToken = () => {
+  Cookies.remove(TOKEN_KEY);
 }
 
 export const setAgentId = (agentId, auto) => {
   if (auto) {
-    Cookies.set('agentId', agentId, {expires: config.cookieExpires || 1})
+    Cookies.set('agentId', agentId, {
+      expires: config.cookieExpires || 1
+    })
   } else {
     Cookies.set('agentId', agentId)
   }
@@ -35,19 +43,19 @@ export const setAgentId = (agentId, auto) => {
 
 export const getAgentId = () => {
   const agentId = Cookies.get('agentId')
-  if (agentId  &&  agentId !== 'undefined') {
+  if (agentId && agentId !== 'undefined') {
     return agentId
   } else {
     return false
   }
 }
-export const parseUrl =(_url) =>{
-    var pattern = /(\w+)=(\w+)/ig;
-    var parames = {};
-    _url.replace(pattern, function (a, b, c) {
-        parames[b] = c;
-    });
-    return parames;
+export const parseUrl = (_url) => {
+  var pattern = /(\w+)=(\w+)/ig;
+  var parames = {};
+  _url.replace(pattern, function (a, b, c) {
+    parames[b] = c;
+  });
+  return parames;
 }
 
 /**
@@ -66,8 +74,8 @@ export const getParams = url => {
   return paramObj
 }
 
-export const getUrlKey = (url,name) => {
-    return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(url) || [, ""])[1].replace(/\+/g, '%20')) || null
+export const getUrlKey = (url, name) => {
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(url) || [, ""])[1].replace(/\+/g, '%20')) || null
 }
 
 /**
@@ -301,41 +309,42 @@ export const readUserAgent = (ua) => {
 }
 
 export const listConvertTree = (array, opt) => {
-    let obj = {
-        primaryKey: opt.primaryKey || 'id',
-        parentKey: opt.parentKey || 'pid',
-        startPid: opt.startPid || 0,
-        currentDept: opt.currentDept || 0,
-        maxDept: opt.maxDept || 100,
-        childKey: opt.childKey || 'children'
-    }
-    return listToTree(array, obj.startPid, obj.currentDept, obj)
+  let obj = {
+    primaryKey: opt.primaryKey || 'id',
+    parentKey: opt.parentKey || 'pid',
+    startPid: opt.startPid || 0,
+    currentDept: opt.currentDept || 0,
+    maxDept: opt.maxDept || 100,
+    childKey: opt.childKey || 'children'
+  }
+  return listToTree(array, obj.startPid, obj.currentDept, obj)
 }
 
 export const listToTree = (array, startPid, currentDept, opt) => {
-    if (opt.maxDept < currentDept) {
-        return []
-    }
-    let child = []
-    if (array && array.length > 0) {
-        child = array.map(item => {
-            // 筛查符合条件的数据（主键 = startPid）
-            if (typeof item[opt.parentKey] !== 'undefined' && item[opt.parentKey] === startPid) {
-                // 满足条件则递归
-                let nextChild = listToTree(array, item[opt.primaryKey], currentDept + 1, opt)
-                // 节点信息保存
-                if (nextChild.length > 0) {
-                    item['hasChild'] = true
-                    item[opt.childKey] = nextChild
-                }else{
-                    item['hasChild'] = false
-                    delete item[opt.childKey]
-                }
-                return item
-            }
-        }).filter(item => {
-            return item !== undefined
-        })
-    }
-    return child
+  if (opt.maxDept < currentDept) {
+    return []
+  }
+  let child = []
+  if (array && array.length > 0) {
+    child = array.map(item => {
+      // 筛查符合条件的数据（主键 = startPid）
+      if (typeof item[opt.parentKey] !== 'undefined' && item[opt.parentKey] === startPid) {
+        // 满足条件则递归
+        let nextChild = listToTree(array, item[opt.primaryKey], currentDept + 1, opt)
+        // 节点信息保存
+        if (nextChild.length > 0) {
+          item['hasChild'] = true
+          item[opt.childKey] = nextChild
+        } else {
+          item['hasChild'] = false
+          delete item[opt.childKey]
+        }
+        return item
+      }
+    }).filter(item => {
+      return item !== undefined
+    })
+  }
+  return child
 }
+

@@ -16,7 +16,6 @@
       :probe-type="3"
     >
       <div>
-        <!-- <div class="tab-list"></div> -->
         <div
           class="advert-item click w702 bg-fff"
           v-for="(item, idx) in data"

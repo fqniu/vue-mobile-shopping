@@ -30,6 +30,8 @@ Vue.prototype.$dialog = Dialog;
 // import echarts from 'echarts';
 // Vue.prototype.$echarts = echarts;
 
+// bus总线 vue实例
+Vue.prototype.$bus = new Vue()
 
 //引入地图
 // import AMap from 'vue-amap'

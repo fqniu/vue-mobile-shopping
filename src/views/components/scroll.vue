@@ -1,6 +1,8 @@
 <template>
-  <div ref="wrapper">
-    <slot></slot>
+  <div class="wrapper" ref="wrapper">
+    <div>
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -32,6 +34,7 @@ export default {
   },
   mounted() {
     setTimeout(this.__initScroll, 20);
+    // console.log(this.scroll);
   },
   methods: {
     __initScroll() {
@@ -39,7 +42,9 @@ export default {
       if (!this.$refs.wrapper) return;
       this.scroll = new BScroll(this.$refs.wrapper, {
         probeType: this.probeType,
-        click: true,
+        click: true, // 鼠标点击滚动
+        // tap: true,
+        // mouseWheel: true, //鼠标滚轮滚动
         pullUpLoad: this.pullUpLoad,
       });
 
@@ -60,7 +65,7 @@ export default {
     finishPullUp() {
       this.scroll && this.scroll.finishPullUp && this.scroll.finishPullUp();
     },
-    scrollTo(x, y, time) {
+    scrollTo(x, y, time = 500) {
       this.scroll && this.scroll.scrollTo && this.scroll.scrollTo(x, y, time);
     },
   },

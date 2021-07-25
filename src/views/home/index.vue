@@ -1,180 +1,145 @@
 <template>
   <div class="home">
-    <!-- <div class="main-page-wrapper"> -->
-    <!-- 轮播图 -->
-    <!-- <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
+    <baseTitleBar
+      backgroundColor="#FFF"
+      :leftEle="leftEle"
+      :title="title"
+      titleColor="#000"
+    ></baseTitleBar>
+
+    <scroll
+      class="content"
+      ref="scroll"
+      @pullingUp="loadMore"
+      @scroll="contentScroll"
+      :data="data"
+      :pull-up-load="enableLoadMore"
+      :probe-type="3"
+    >
+      <!-- 轮播图 -->
+      <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
         <van-swipe-item v-for="(item, idx) in swipeList" :key="idx">
           <img :src="item.target" alt="" class="swiper-img" />
         </van-swipe-item>
-      </van-swipe> -->
-    <div class="wrapper-content">
-      <scroll
-        class="content"
-        ref="scroll"
-        @pullingUp="loadMore"
-        :data="data"
-        :pull-up-load="true"
-        :probe-type="3"
-      >
-        <!-- 轮播图 -->
-        <!-- <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
-          <van-swipe-item v-for="(item, idx) in swipeList" :key="idx">
-            <img :src="item.target" alt="" class="swiper-img" />
-          </van-swipe-item>
-        </van-swipe> -->
-        <div
-          class="advert-item click w702 bg-fff"
-          v-for="(item, idx) in data"
-          :key="idx"
-          @click="gotoAdvDetail(item.resource_id)"
-        >
-          <div class="adv-left">
-            <div class="fs-30 color-000 flex-center">
-              <span
-                class="label fs-24"
-                :class="{
-                  label: item.rank == '一级屏',
-                  label2: item.rank == '二级屏',
-                  label3: item.rank == '三级屏',
-                  label4: item.rank == '四级屏'
-                }"
-              >
-                {{ item.atlas.category }}
-              </span>
-              <span class="adv-title font-bold text-el">
-                {{ item.resource_info }}
-              </span>
-            </div>
-            <div class="flex-center mt-15">
-              <div class="tag fs-24 text-el">{{ item.resource_info }}</div>
-              <div class="line"></div>
-            </div>
-            <div class="fs-24 color-333 mt-10 text-el" style="width: 4.9rem">
-              {{ item.atlas.desc }}
-            </div>
-            <div class="mt-24">
-              <span class="coin fs-28">收藏量{{ item.atlas.like_count }}</span>
-              <span class="qty fs-20 ml-24">
-                曝光量{{ item.atlas.favorite_count }}
-              </span>
-            </div>
-          </div>
-          <div class="adv-right">
-            <div class="adv-img">
-              <img :src="item.target" alt="" />
-            </div>
-            <div class="dist fs-20" v-if="item.distance">
-              {{ item.atlas.sender.username }}
-            </div>
-          </div>
-        </div>
-      </scroll>
-    </div>
+      </van-swipe>
+      <!-- 列表 -->
+      <Item v-for="(item, idx) in data" :key="idx" :item="item" />
+    </scroll>
+    <BackTop @click.native="gobackTop" v-show="showBackTop"></BackTop>
   </div>
-  <!-- </div> -->
 </template>
 
 <script>
-import scroll from '../components/scroll'
-import { homeSwipeList, homeGoodsList } from '@/api/home'
+import baseTitleBar from "@/components/titleBar/baseTitleBar";
+import scroll from "../components/scroll";
+import BackTop from "../components/backTop.vue";
+import Item from "../components/item.vue";
+import { homeSwipeList, homeGoodsList } from "@/api/home";
 
 export default {
-  components: { scroll },
+  name: "home",
+  components: { scroll, baseTitleBar, BackTop, Item },
   data() {
     return {
       page: 1,
       limit: 10,
       data: [],
-      swipeList: []
-    }
+      swipeList: [],
+      leftEle: {
+        iconName: "iconback",
+        color: "#000",
+        fontSize: ".36rem",
+        method: this.back,
+      },
+      title: "首页",
+      showBackTop: false,
+      backTopDistance: 800,
+      enableLoadMore: true,
+    };
   },
   methods: {
+    // 请求轮播数据
+    async gethomeSwipeList() {
+      let res = await homeSwipeList();
+      this.swipeList = res.item;
+    },
+    // 请求列表数据
     getListData() {
       let params = {
         // 页数
         page: this.page,
-        limit: this.limit
-      }
-      homeGoodsList(params).then(res => {
+        limit: this.limit,
+      };
+      homeGoodsList(params).then((res) => {
         if (res.code == 200) {
-          if (this.data.length > res.item.total) {
-            this.enableLoadMore = false
-            return
+          if (this.data.length >= res.item.total) {
+            this.enableLoadMore = false;
+            return;
           }
           // this.data = this.data.concat(res.item.resultList);
-          const homeGoodsList = res.item.resultList
-          this.data.push(...homeGoodsList)
-          this.page += 1
-          this.$refs.scroll.finishPullUp()
+          const homeGoodsList = res.item.resultList;
+          this.data.push(...homeGoodsList);
+          this.page += 1;
+          this.$refs.scroll.finishPullUp();
         } else {
-          console.log('接口出错')
+          console.log("接口出错");
         }
-      })
+      });
     },
-    // 筛选后发送请求数据方法
-    async homeGoodsList() {
-      // 筛选条件
-      let params = {
-        // 页数
-        page: this.page,
-        limit: this.limit
-      }
-      // console.log(params);
-      let res = await homeGoodsList(params)
-      this.data = res.item.resultList
-    },
-    // contentScroll(position) {
-    //     // 1.决定tabFixed是否显示
-    //     this.isTabFixed = position.y < -this.tabOffsetTop;
-    //     // 2.决定backTop是否显示
-    //     this.showBackTop = position.y < -BACKTOP_DISTANCE;
-    // },
+    // 加载更多
     loadMore() {
-      // this.getHomeProducts(this.currentType);
-      this.getListData()
+      this.getListData();
+      // 用于图片异步加载高度问题刷新
+      this.$refs.scroll.refresh();
     },
+    // 监听回顶的显示
+    contentScroll(position) {
+      // 1.决定tabFixed是否显示
+      // this.isTabFixed = position.y < -this.tabOffsetTop;
+      // 2.决定backTop是否显示
+      this.showBackTop = -position.y > this.backTopDistance;
+    },
+    // 回到顶部
     backTop() {
-      this.$refs.scroll.scrollTo(0, 0, 300)
+      this.$refs.scroll.scrollTo(0, 0, 300);
     },
-    // 轮播图数据
-    async gethomeSwipeList() {
-      let res = await homeSwipeList()
-      this.swipeList = res.item
+    // 回到顶部
+    gobackTop() {
+      // console.log("回到顶部", this.$refs.scroll);
+      // 第一种写法 this.$refs.scroll 拿到scroll组件里面的scroll , 然后调用里面的方法 , 第一二参数为距离, 第三个参数为时间500ms
+      // this.$refs.scroll.scroll.scrollTo(0, 0, 500);
+      // 第二种写法
+      this.$refs.scroll.scrollTo(0, 0, 500);
     },
-    gotoAdvDetail(id) {
-      console.log(id)
-      this.$router.push({ path: '/detail', query: { id: id } })
-    }
+    imageLoad() {
+      console.log("图片加载完触发事件");
+      // this.$bus.$emit('itemImageLoad')
+    },
   },
   created() {
-    this.gethomeSwipeList()
-    this.homeGoodsList()
-  }
-}
+    this.gethomeSwipeList();
+    this.getListData();
+    // 监听item中图片加载完
+    // this.$bus.$on('itemImageLoad', () => {
+    //   console.log(111);
+    // })
+  },
+};
 </script>
 
 <style scoped lang="scss">
-// .home {
-//   height: 100vh;
-// }
-.main-page-wrapper {
+.home {
+  height: 100vh;
   position: relative;
-  overflow: auto;
 }
-.wrapper-content {
-  height: 100%;
-  margin-bottom: 1.2rem;
+.content {
+  position: absolute;
+  top: 0.9rem;
+  bottom: 1.08rem;
+  left: 0;
+  right: 0;
+  overflow: hidden;
 }
-
-// .content {
-//   position: relative;
-//   top: 0.24rem;
-//   bottom: 1.08rem;
-//   left: 0;
-//   right: 0;
-//   overflow: hidden;
-// }
-
 // 轮播图
 .my-swipe {
   width: 100%;
@@ -234,7 +199,7 @@ export default {
     margin: 0 0.23rem;
     position: relative;
     &::after {
-      content: '';
+      content: "";
       display: block;
       position: absolute;
       top: 0;
@@ -254,7 +219,7 @@ export default {
     margin: 0 0.23rem;
     position: relative;
     &::after {
-      content: '';
+      content: "";
       display: inline-block;
       position: absolute;
       top: 0;
