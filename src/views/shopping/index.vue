@@ -7,17 +7,20 @@
       </van-swipe-item>
     </van-swipe>
     <!-- 列表 -->
-    <van-list
-      v-model="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      @load="loadMore"
-      :immediate-check="false"
-      v-if="list.length > 0"
-    >
-      <Item v-for="(item, idx) in list" :key="idx" :item="item" />
-    </van-list>
-    <div class="blank"></div>
+    <div class="van-list-wrapper">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        
+        finished-text="没有更多了"
+        @load="loadMore"
+        :immediate-check="false"
+        v-if="list.length > 0"
+      >
+      <!-- :offset="offset" -->
+        <Item v-for="(item, idx) in list" :key="idx" :item="item" />
+      </van-list>
+    </div>
   </div>
 </template>
 
@@ -32,6 +35,7 @@ export default {
       swipeList: [],
       page: 1,
       limit: 10,
+      // offset: 10,
       list: [],
       loading: false,
       finished: false,
@@ -77,6 +81,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+// html,
+// body {
+//   height: 100%;
+// }
 // 轮播图
 .my-swipe {
   width: 100%;
@@ -87,7 +95,8 @@ export default {
   height: 4.5rem;
 }
 .classify {
-  height: 100vh;
+  // height: 100vh;
+  height: 100%;
 }
 
 .content {
@@ -102,5 +111,10 @@ export default {
 .blank {
   width: 100%;
   height: 1.08rem;
+}
+.van-list-wrapper {
+  // height: 6rem;
+  // padding: 0 0 3rem;
+  // height: 100%;
 }
 </style>
